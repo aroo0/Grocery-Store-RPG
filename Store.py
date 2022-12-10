@@ -5,6 +5,10 @@ from Items import Item
 
 
 class Store:
+
+  # Whole sale rate determines the amount at which the store buys from the wholesaler,
+  #if we assume that the customer buys an item for 1 
+  # then the store bought from the wholesaler for 0.7 and has an earnings of 0.3
   wholesale_rat = 0.7
 
   def __init__(self, name, budget=1000, inventory={}):
@@ -19,8 +23,8 @@ class Store:
     
 
   def inventory_display(self):
+    # Displaying the assortment as a dataframe
     print("Inventory:\n~~~~")
-    number = 1
     names = [item.name for item in self.inventory.keys()]
     amounts = [item for item in self.inventory.values()]
     prices = [item.price for item in self.inventory.keys()]
@@ -34,9 +38,8 @@ class Store:
 
     return range(len(table))
 
-#### DELIVERY
-
   def deliver(self, product, amount):
+    # Purchase of products by the store from a wholesaler.
       if type(product) is Item:
           cost = product.price * amount * self.wholesale_rat
           round_cost = round(cost, 2)
@@ -49,29 +52,27 @@ class Store:
           else:
               self.budget -= round_cost
               self.inventory[product] = amount
-
-              print('''
-Products succesfull delivered. 
-Store current budget: {budget} $
-The delivery: {name} in {amount} amount.
-Delivery cost: {cost} $
-            
-              '''.format(budget=round(self.budget, 2), name=product.name, amount=amount, cost=round_cost))
+              print(
+                '''
+                        Products succesfull delivered. 
+                        Store current budget: {budget} $
+                        The delivery: {name} in {amount} amount.
+                        Delivery cost: {cost} $
+              '''
+              .format(budget=round(self.budget, 2), name=product.name, amount=amount, cost=round_cost))
 
       else:
         return '{product} is not available at wholesale.'.format(product=product)
 
-
-  ### Buying 
   def buy(self, item, amount):
+    # Integrated with Shopper class buying function.
 
     self.inventory[item] -= amount 
     self.budget += item.price * amount
 
 
   def display_sale(self):
-
-    number = 1
+    #Displaying products on sale
     for item in self.inventory.keys():
       if item.sale:
         print('{number}.'.format(number=number), item, 'Amount x {amount}'.format(amount=self.inventory[item]))
@@ -85,6 +86,7 @@ Delivery cost: {cost} $
 
     for item in self.inventory.keys():
       return not item.sale
+      
 
   def farwell(self):
     print('{name} store thanks you for your time. See you soon!'.format(name=self.name))
